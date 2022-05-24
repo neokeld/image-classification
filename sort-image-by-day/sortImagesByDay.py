@@ -3,51 +3,46 @@
 # Arnaud Duforat 2016/08/13
 # sorts image based on exif date
 
-from PIL import Image
-from PIL.ExifTags import TAGS
 import sys, os, glob
 
+from readers.exif import get_exif
+
+
 # Get formated date from unformatted datetime
-def format_dateTime(UNFORMATTED):
-    DATE, TIME = UNFORMATTED.split()
-    return [DATE.replace(':',''), TIME]
+def format_datetime(unformatted: str):
+    date, time = unformatted.split()
+    return [date.replace(':', ''), time]
+
 
 # Get hour
-def format_time(TIME):
-    return TIME.split(':')[0]
+def format_time(time: str):
+    return time.split(':')[0]
 
-#
-def get_exif(fn):
-#see <a href="http://www.blog.pythonlibrary.org/2010/03/28/getting-photo-metadata-exif-using-python/">http://www.blog.pythonlibrary.org/2010/03/28/getting-photo-metadata-exif-using-python/</a>
-    ret = {}
-    i = Image.open(fn)
-    info = i._getexif()
-    for tag, value in info.items():
-        decoded = TAGS.get(tag, tag)
-        ret[decoded] = value
-    print ret['DateTime']
-    return ret
- 
-def sortPhotos(path):
-    PHOTOS = []
-    EXTENSIONS = ['.jpg','.jpeg', '.png']
-    print 'managed extensions: ' + ', '.join(EXTENSIONS)
-    for EXTENSION in EXTENSIONS:
-        PHOTO = glob.glob(path + '/*' + EXTENSION)
-        PHOTOS.extend(PHOTO)
- 
-    for PHOTO in PHOTOS:
-        DATE, TIME = format_dateTime(get_exif(PHOTO)['DateTime'])
-	destinationPath = path + '/' + DATE + '-' + format_time(TIME)
+
+def sortPhotos(path: str):
+    photos = []
+    EXTENSIONS = ['.jpg', '.jpeg']
+    print('managed extensions: ' + ', '.join(EXTENSIONS))
+    for extension in EXTENSIONS:
+        photo = glob.glob(path + '/*' + extension)
+        photos.extend(photo)
+
+    for photo in photos:
+        exif = get_exif(photo)
+        datetime_str = exif.get('DateTime') or exif.get('DateTimeOriginal') or exif.get('DateTimeDigitized') or exif.get('CreateDate')
+        date, time = format_datetime(datetime_str)
+        destinationPath = os.path.join(path, date + '-' + format_time(time))
         if not os.path.exists(destinationPath):
             os.mkdir(destinationPath)
-	destinationFile = destinationPath + '/' + os.path.basename(PHOTO)
-	print destinationFile
-        os.rename(PHOTO, destinationFile)
- 
-if __name__=="__main__":
-    print 'sortImages : sort images based on exif date'
-    PATH = sys.argv[1]
-    if PATH == '': PATH = os.getcwd()
-    print PATH
-    sortPhotos(PATH)
+        destinationFile = os.path.join(destinationPath, os.path.basename(photo))
+        print(destinationFile)
+        os.rename(photo, destinationFile)
+
+
+if __name__ == "__main__":
+    print('sortImages : sort images based on exif date')
+    path = sys.argv[1]
+    if path == '':
+        path = os.getcwd()
+    print(path)
+    sortPhotos(path)
