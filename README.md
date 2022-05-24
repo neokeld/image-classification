@@ -4,8 +4,8 @@ Different categories of image classification based on their exif metadata in Pyt
 
 | Algorithm                | Description                                                  |
 | ------------------------ | ------------------------------------------------------------ |
-| sort-image-by-day        | 2016-08-13 algorithm to sort image by day in Python 2        |
-| sort-image-by-timedelta  | 2019-05-16 algorithm to sort image by timedelta in Python 3  |
+| sort_image_by/day        | 2016-08-13 algorithm to sort image by day in Python 2        |
+| sort_image_by/timedelta  | 2019-05-16 algorithm to sort image by timedelta in Python 3  |
 
 ## Install
 
@@ -15,14 +15,16 @@ source venv/Scripts/activate
 pip install -r requirements.txt
 ```
 
-## Run sort-image-by-day
+## Run image_classification_by
+
+### Day
 
 ```sh
-python sort-image-by-day/sortImagesByDay.py tests/images/
+python image_classification_by.py day tests/images/
 ```
 
-## Run sort-image-by-timedelta
+### Timedelta
 
 ```sh
-python sort-image-by-timedelta/sortImagesByTimedelta.py tests/images/
+python image_classification_by.py timedelta tests/images/
 ```

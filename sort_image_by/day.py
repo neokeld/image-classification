@@ -3,7 +3,7 @@
 # Arnaud Duforat 2016/08/13
 # sorts image based on exif date
 
-import sys, os, glob
+import os, glob
 
 from readers.exif import get_exif
 
@@ -19,7 +19,7 @@ def format_time(time: str):
     return time.split(':')[0]
 
 
-def sortPhotos(path: str):
+def classify_photos(path: str):
     photos = []
     EXTENSIONS = ['.jpg', '.jpeg']
     print('managed extensions: ' + ', '.join(EXTENSIONS))
@@ -37,12 +37,3 @@ def sortPhotos(path: str):
         destinationFile = os.path.join(destinationPath, os.path.basename(photo))
         print(destinationFile)
         os.rename(photo, destinationFile)
-
-
-if __name__ == "__main__":
-    print('sortImages : sort images based on exif date')
-    path = sys.argv[1]
-    if path == '':
-        path = os.getcwd()
-    print(path)
-    sortPhotos(path)

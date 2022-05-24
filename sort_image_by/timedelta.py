@@ -4,7 +4,7 @@
 # sorts image based on exif date
 # update 2019/05/16: python 3 + gather images based on a timedelta
 
-import sys, os, glob
+import os, glob
 from datetime import datetime, timedelta
 from typing import List
 
@@ -87,14 +87,3 @@ def classify_photos(basepath: str, sorted_photos: List[str]):
                 if not TEST_MODE:
                     os.mkdir(destinationPath)
             move_image(destinationPath, photo)
-
-
-if __name__ == "__main__":
-    print('sortImages : sort images based on exif date')
-    print('gather images in a directory based on period')
-    path = sys.argv[1]
-    if path == '':
-        path = os.getcwd()
-    print('source path: ' + path)
-    sorted_photos = sort_photos_by_date(path)
-    classify_photos(path, sorted_photos)
